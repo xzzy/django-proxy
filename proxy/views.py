@@ -9,7 +9,7 @@ except:
     from urllib.parse import urlparse
 
 
-def proxy_view(request, url, requests_args=None, basic_auth=None):
+def proxy_view(request, url, requests_args=None, basic_auth=None, cookies=None):
     """
     Forward as close to an exact copy of the request as possible along to the
     given url.  Respond with as close to an exact copy of the resulting
@@ -42,13 +42,12 @@ def proxy_view(request, url, requests_args=None, basic_auth=None):
 
     requests_args['headers'] = headers
     requests_args['params'] = params
-
     
     auth_request = None
     if basic_auth:
         auth_request = requests.auth.HTTPBasicAuth(basic_auth['user'], basic_auth['password'])
 
-    response = requests.request(request.method, url, auth=auth_request, **requests_args)
+    response = requests.request(request.method, url, auth=auth_request, cookies=cookies **requests_args)
 
     proxy_response = HttpResponse(
         response.content,
