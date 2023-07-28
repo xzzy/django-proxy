@@ -2,13 +2,14 @@ import re
 import requests
 from django.http import HttpResponse
 from django.http import QueryDict
+
 try:
     from urlparse import urlparse
 except:
     from urllib.parse import urlparse
 
 
-def proxy_view(request, url, requests_args=None):
+def proxy_view(request, url, requests_args=None, basic_auth=None):
     """
     Forward as close to an exact copy of the request as possible along to the
     given url.  Respond with as close to an exact copy of the resulting
@@ -42,7 +43,12 @@ def proxy_view(request, url, requests_args=None):
     requests_args['headers'] = headers
     requests_args['params'] = params
 
-    response = requests.request(request.method, url, **requests_args)
+    
+    auth_request = None
+    if basic_auth:
+        auth_request = requests.auth.HTTPBasicAuth(basic_auth['user'], basic_auth['password'])
+
+    response = requests.request(request.method, url, auth=auth_request, **requests_args)
 
     proxy_response = HttpResponse(
         response.content,
