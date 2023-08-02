@@ -61,7 +61,7 @@ if sys.argv[-1] == 'publish':
 
 setup(
     name=name,
-    version=get_version(package),
+    version="3.0.0,
     url=url,
     license=license,
     description=description,
